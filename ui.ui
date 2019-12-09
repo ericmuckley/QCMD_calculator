@@ -6,21 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>726</width>
-    <height>518</height>
+    <width>698</width>
+    <height>451</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Sample database UI</string>
+   <string>QCM-D calculator</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGroupBox" name="outputframe">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>40</y>
-      <width>291</width>
-      <height>181</height>
+      <x>360</x>
+      <y>20</y>
+      <width>321</width>
+      <height>361</height>
      </rect>
     </property>
     <property name="title">
@@ -31,9 +31,15 @@
       <rect>
        <x>20</x>
        <y>30</y>
-       <width>256</width>
-       <height>141</height>
+       <width>281</width>
+       <height>311</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>12</pointsize>
+      </font>
      </property>
      <property name="verticalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOn</enum>
@@ -41,67 +47,22 @@
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:15pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
     </widget>
-   </widget>
-   <widget class="QPushButton" name="createplot">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>240</y>
-      <width>101</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Create plot</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="addsample">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>290</y>
-      <width>131</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Add sample to database</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="save_file">
-    <property name="geometry">
-     <rect>
-      <x>540</x>
-      <y>240</y>
-      <width>101</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Save file</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="test_pause_button">
-    <property name="geometry">
-     <rect>
-      <x>560</x>
-      <y>290</y>
-      <width>101</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Test pause</string>
-    </property>
    </widget>
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
       <x>20</x>
       <y>20</y>
-      <width>361</width>
-      <height>431</height>
+      <width>311</width>
+      <height>401</height>
      </rect>
     </property>
     <property name="title">
@@ -112,7 +73,7 @@
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>321</width>
+       <width>281</width>
        <height>311</height>
       </rect>
      </property>
@@ -496,37 +457,110 @@
       </item>
      </layout>
     </widget>
-    <widget class="QPushButton" name="run_model">
+    <widget class="QPushButton" name="fit_model">
      <property name="geometry">
       <rect>
-       <x>120</x>
-       <y>390</y>
+       <x>150</x>
+       <y>360</y>
        <width>131</width>
        <height>23</height>
       </rect>
      </property>
      <property name="text">
-      <string>Run model</string>
+      <string>Fit model</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="show_contour_plots">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>360</y>
+       <width>121</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Show contour plots</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
      </property>
     </widget>
    </widget>
-   <widget class="QCheckBox" name="show_contour_plots">
+   <widget class="QPushButton" name="hover_for_help">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>370</y>
-      <width>121</width>
-      <height>17</height>
+      <x>540</x>
+      <y>390</y>
+      <width>131</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Calculation of viscoelastic properties from QCM-D data
+
+This software fits QCM-D data to the Kelvin-Voigt viscoelastic model
+to obtain viscosity and shear modulus of an adlayer film, along with
+calculation of  G' and G'' (elastic and loss moduli).
+
+Use the *User Inputs* section to input experimental data. Fit the model
+using the *Fit model* button to find a solution. Once the solution is found,
+you may adjust the range of μ and η values to limit the search space for
+obtaining a solution with higher precision.
+
+Heatmaps of Δf and ΔD over a range of shear modulus (mu) and viscosity (eta)
+values are displayed as pop-ups if the *Show contour plots* option is checked.
+Black contour lines correspond to the experimentally-measured values of Δf and ΔD.
+
+The solution to the Kelvin-Voigt viscoelastic model occurs at the μ and η 
+values where the Δf and ΔD contours overlap. The overlap and the
+first-order solution (intersection of contour lines) is shown in the pop-up plot.
+
+Finally, calculated values are displayed:
+*   df_exp: experimentally-measured Δf value in Hz/cm^2
+*   df_exp: experimentally-measured ΔD value in units of 10^-6
+*   df_fit: fitted value of Δf in Hz/cm^2
+*   dd_fit: fitted value of ΔD in units of 10^-6
+*   density: user-defined value of film density in kg/m^3
+*   thickness: user-defined value of film thickness in meters
+*   penetration_depth: calculated depth of acoustic wave into film in m
+*   mu: calculated value of shear modulus μ in Pa
+*   eta: calculated value of viscosity η in Pa s
+*   G': calculated storage modulus in Pa
+*   G'': calculated loss modulus in Pa s
+
+For more information about the viscoelastic model, see:
+
+1.   Voinova, M.V., Rodahl, M., Jonson, M. and Kasemo, B., 1999. Viscoelastic
+acoustic response of layered polymer films at fluid-solid interfaces:
+continuum mechanics approach. Physica Scripta, 59(5), p.391.
+https://iopscience.iop.org/article/10.1238/Physica.Regular.059a00391/meta
+
+2.   Liu, S.X. and Kim, J.T., 2009. Application of Kelvin—Voigt model in
+quantifying whey protein adsorption on polyethersulfone using QCM-D.
+JALA: Journal of the Association for Laboratory Automation, 14(4),
+pp.213-220. https://journals.sagepub.com/doi/full/10.1016/j.jala.2009.01.003
+
+Created on Dec 3 2019 by ericmuckley@gmail.com</string>
+    </property>
+    <property name="text">
+     <string>Hover for help</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="export_results">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>390</y>
+      <width>131</width>
+      <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>Show contour plots</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-    <property name="tristate">
-     <bool>false</bool>
+     <string>Export results</string>
     </property>
    </widget>
   </widget>
@@ -535,7 +569,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>726</width>
+     <width>698</width>
      <height>21</height>
     </rect>
    </property>
@@ -543,14 +577,11 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionShowfiledir"/>
-    <addaction name="actionChangefiledir"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>

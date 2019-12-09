@@ -31,7 +31,7 @@ Created on Dec 9 2019
 
 
 # core GUI libraries
-from PyQt5 import QtWidgets, uic, QtCore#, QtGui
+from PyQt5 import QtWidgets, uic, QtCore, QtGui
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 #from PyQtCore import QRunnable, QThreadPool, pyqtSlot
 
@@ -59,7 +59,7 @@ class Worker(QtCore.QRunnable):
     """Class to start a new worker thread for background tasks.
 
     Call this thread inside a main GUI function by:
-    worker = Worker(self.function_to_execute)  # pass other args here
+    worker = Worker(self.function_to_execute)  # , pass other args here,...,)
     self.threadpool.start(worker)
     where self.function_to_execute is the function to run and its args
     """
@@ -112,7 +112,7 @@ class App(QMainWindow):
 
         # assign actions to GUI buttons
         # example: self.ui.BUTTON_NAME.clicked.connect(self.FUNCTION_NAME)
-        self.ui.run_model.clicked.connect(self.run_model)
+        self.ui.fit_model.clicked.connect(self.fit_model_in_new_thread)
         #self.ui.setdirectory.clicked.connect(self.setdirectory)
         #self.ui.addsample.clicked.connect(self.add_sample)
         #self.ui.createplot.clicked.connect(self.create_plot)
@@ -204,11 +204,10 @@ class App(QMainWindow):
         self.threadpool.start(worker)
 
 
-
-
-
-
-
+    def fit_model_in_new_thread(self):
+        """Run Kelvin-Voigt model in new thread."""
+        worker = Worker(self.fit_model)  # pass other args here
+        self.threadpool.start(worker)
 
 
 
@@ -228,35 +227,46 @@ class App(QMainWindow):
                 'eta_low': int(self.ui.eta_exp_low.value()),
                 'eta_high': int(self.ui.eta_exp_high.value())}
         return uidict
-                
 
-    def run_model(self):
+
+    def mu_eta_mesh(self, uidict):
+        """Create mesh of mu and eta valuses using inputs on UI."""
+        # get 2D mesh grid points of log mu and eta values
+        step_num=40
+        mu_mesh, eta_mesh = np.meshgrid(
+                np.linspace(uidict['mu_low'], uidict['mu_high'],
+                            step_num).astype(float),
+                np.linspace(uidict['eta_low'], uidict['eta_high'],
+                            step_num).astype(float))
+        #get mesh of mu and eta values and corresponding DF and DD values        
+        df_surf, dd_surf = self.kelvin_voigt(
+                             10**mu_mesh,
+                             10**eta_mesh,
+                             rho_f=uidict['rho'],
+                             h_f=uidict['h'],
+                             n=uidict['n'],
+                             f0=uidict['f0'],
+                             medium=uidict['medium'])
+
+        return mu_mesh, eta_mesh, df_surf, dd_surf          
+
+
+    def fit_model(self):
         """Run modeling of the QCM-D dtaa using inputs from UI. """
+        self.ui.fit_model.setDisabled(True)
+        self.ui.outbox.append('------------------------')
+        self.ui.outbox.append('Fitting model...')
         # get dictionary of input values from UI
         uidict = self.get_ui_inputs()
         results = uidict.copy()
         
-        for key in uidict:
-            print(key)
-            print(str(uidict[key]))
+        # get grid of possible mu, eta, df, and dd values
+        mu_mesh, eta_mesh, df_surf, dd_surf = self.mu_eta_mesh(uidict)
 
-
-        # get mesh of mu and eta values
-        mu_mesh, eta_mesh = self.get_mu_eta_mesh(uidict)
-        
-        # calculate theoretical DF and DD values across the mu and eta grid
-        df_surf, dd_surf = self.kelvin_voigt(10**mu_mesh,
-                                             10**eta_mesh,
-                                             rho_f=uidict['rho'],
-                                             h_f=uidict['h'],
-                                             medium=uidict['medium'],
-                                             f0=uidict['f0'],
-                                             n=uidict['n'])
-        
         # plot delta F heatmap
         df_cont_plot = plt.contour(mu_mesh, eta_mesh,
                                    df_surf, uidict['df_exp'])
-        if self.ui.contour_plots.isChecked():
+        if self.ui.show_contour_plots.isChecked():
             plt.contourf(mu_mesh, eta_mesh, df_surf, 50, cmap='rainbow')
             self.plot_setup(title='Delta F (Hz/cm^2)',
                        labels=['Log (mu)', 'Log (eta)'], colorbar=True)
@@ -265,7 +275,7 @@ class App(QMainWindow):
         # plot delta D heatmap
         dd_cont_plot = plt.contour(mu_mesh, eta_mesh,
                                    dd_surf, uidict['dd_exp'])
-        if self.ui.contour_plots.isChecked():
+        if self.ui.show_contour_plots.isChecked():
             plt.contourf(mu_mesh, eta_mesh, dd_surf, 50, cmap='rainbow')
             self.plot_setup(title='Delta D (x10^-6)',
                        labels=['Log (mu)', 'Log (eta)'], colorbar=True)
@@ -300,65 +310,34 @@ class App(QMainWindow):
             df_fit, dd_fit = self.kelvin_voigt(mu, eta,
                                                rho_f=uidict['rho'],
                                                h_f=uidict['h'],
-                                               medium=uidict['medium'],
+                                               n=uidict['n'],
                                                f0=uidict['f0'],
-                                               n=uidict['n'])
-            pen_dep = self.get_penetration_depth(uidict['f0'],
-                                                 eta,
+                                               medium=uidict['medium'])
+
+            pen_dep = self.get_penetration_depth(uidict['f0'], eta,
                                                  uidict['rho'])
-        
-        
-            results['df_fit'] = df_fit
-            results['dd_fit'] = dd_fit
-            results['mu'] = mu
-            results['eta'] = eta
-            results['penetration_depth']: pen_dep
-            results["G'"] = Gp
-            results["G''"] = Gdp
-        
-            print('Found %i solutions. First-order solution:' %len(intersection_list))
-            [print('%s: %0.4e' %(key, results[key])) for key in results]
-        
+            
+            results.update({'df_fit': df_fit, 'dd_fit': dd_fit,
+                            'mu': mu, 'eta': eta,
+                            'penetration_depth': pen_dep,
+                            "G'": Gp, "G''": Gdp})
+
+            self.ui.outbox.append(
+                    'Found '+str(len(intersection_list))+' solutions.')
+            self.ui.outbox.append('First-order solution:')
+            for key in results:
+                self.ui.outbox.append(str(key)+': '+str(results[key]))
         else:
             self.ui.outbox.append(
                     '\n\nNo solutions exist with these parameters.')
+        self.ui.fit_model.setDisabled(False)
+        self.ui.outbox.moveCursor(QtGui.QTextCursor.End)
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def get_mu_eta_mesh(self, uidict, step_num=100):
-        """Create mesh of mu and eta valuses using inputs on UI."""
-        # get 2D mesh grid points of log mu and eta values
-        mu_mesh, eta_mesh = np.meshgrid(
-                np.linspace(uidict['mu_low'], uidict['mu_high'],
-                            step_num).astype(float),
-                np.linspace(uidict['eta_low'], uidict['eta_high'],
-                            step_num).astype(float))
-        return mu_mesh, eta_mesh
-        
-
-    def plot_setup(labels=['X', 'Y'], fsize=20, setlimits=False,
+    def plot_setup(self, labels=['X', 'Y'], fsize=20, setlimits=False,
                    title=None, legend=False, colorbar=False,
                    limits=[0,1,0,1], save=False, filename='plot.jpg'):
         """Creates a custom plot configuration to make graphs look nice.
@@ -381,8 +360,9 @@ class App(QMainWindow):
         if save:
             fig.savefig(filename, dpi=120, bbox_inches='tight')
             plt.tight_layout()
-    
-    def kelvin_voigt(mu_f, eta_f, rho_f=1e3, h_f=1e-6, n=1, f0=5e6,
+
+
+    def kelvin_voigt(self, mu_f, eta_f, rho_f=1e3, h_f=1e-6, n=1, f0=5e6,
                     medium='air'):
         """ 
         The Kelvin-Voigt model comes from eqns (15) in the paper by 
@@ -415,7 +395,7 @@ class App(QMainWindow):
         if medium == 'air':
             rho_b = 1.1839  # density of bulk air (25 C) in kg/m^3
             eta_b = 18.6e-6  # viscosity of bulk air (25 C) in Pa s
-        if medium == 'liquid':
+        if medium == 'water':
             rho_b = 1000  # density of bulk water in kg/m^3
             eta_b = 8.9e-4  # viscosity of bulk water in Pa s
         # define equations from the Kelvin-Voigt model in publication
@@ -433,8 +413,9 @@ class App(QMainWindow):
         df = np.imag((beta-beta0)/(2*np.pi*rho_q*h_q))
         dd = -np.real((beta-beta0)/(np.pi*f0*n*rho_q*h_q))*1e6
         return df, dd
-    
-    def get_contour(cont_plot):
+
+
+    def get_contour(self, cont_plot):
         """Get ordered pairs of contour lines from a contour plot.
         Input should be defined as:
         cont_plot = plt.contour(x_mesh, y_mesh, z_surf, contour_value)"""
@@ -445,8 +426,9 @@ class App(QMainWindow):
             return np.vstack(paths)
         else:
             return []
-    
-    def find_intersections(op_list1, op_list2):
+
+
+    def find_intersections(self, op_list1, op_list2):
         """Find all intersections between two curves. Curves are defined by lists
         of ordered pairs (x, y).
         Returns an empty list if no intersections are found."""
@@ -470,8 +452,9 @@ class App(QMainWindow):
                                         op_list2[i2][1], op_list2[i2+1][1]])
                         intersections.append([avg_x, avg_y])
         return intersections
-    
-    def get_penetration_depth(freq, eta, rho):
+
+
+    def get_penetration_depth(self, freq, eta, rho):
         """Calculate penetration depth of acoustic wave using the QCM
         resonant requency (freq), adlayer visacosity (eta), and adlayer
         density (rho)."""

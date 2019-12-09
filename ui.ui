@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>698</width>
-    <height>451</height>
+    <height>506</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>QCM-D calculator</string>
+   <string>QCMD calculator</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGroupBox" name="outputframe">
@@ -20,7 +20,7 @@
       <x>360</x>
       <y>20</y>
       <width>321</width>
-      <height>361</height>
+      <height>441</height>
      </rect>
     </property>
     <property name="title">
@@ -38,7 +38,7 @@
      <property name="font">
       <font>
        <family>Arial</family>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="verticalScrollBarPolicy">
@@ -51,7 +51,7 @@
       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:15pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
@@ -62,11 +62,17 @@ p, li { white-space: pre-wrap; }
       <x>20</x>
       <y>20</y>
       <width>311</width>
-      <height>401</height>
+      <height>441</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
     <property name="title">
-     <string>User inputs</string>
+     <string>User Inputs</string>
     </property>
     <widget class="QWidget" name="gridLayoutWidget_4">
      <property name="geometry">
@@ -74,7 +80,7 @@ p, li { white-space: pre-wrap; }
        <x>10</x>
        <y>30</y>
        <width>281</width>
-       <height>311</height>
+       <height>351</height>
       </rect>
      </property>
      <layout class="QGridLayout" name="gridLayout">
@@ -460,8 +466,8 @@ p, li { white-space: pre-wrap; }
     <widget class="QPushButton" name="fit_model">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>360</y>
+       <x>90</x>
+       <y>400</y>
        <width>131</width>
        <height>23</height>
       </rect>
@@ -470,31 +476,12 @@ p, li { white-space: pre-wrap; }
       <string>Fit model</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="show_contour_plots">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>360</y>
-       <width>121</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Show contour plots</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-     <property name="tristate">
-      <bool>false</bool>
-     </property>
-    </widget>
    </widget>
    <widget class="QPushButton" name="hover_for_help">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>390</y>
+      <x>370</x>
+      <y>420</y>
       <width>131</width>
       <height>23</height>
      </rect>
@@ -512,12 +499,12 @@ you may adjust the range of μ and η values to limit the search space for
 obtaining a solution with higher precision.
 
 Heatmaps of Δf and ΔD over a range of shear modulus (mu) and viscosity (eta)
-values are displayed as pop-ups if the *Show contour plots* option is checked.
-Black contour lines correspond to the experimentally-measured values of Δf and ΔD.
+values can be displayedby clicking the *Plot* buttons. Black contour lines
+correspond to the experimentally-measured values of Δf and ΔD.
 
 The solution to the Kelvin-Voigt viscoelastic model occurs at the μ and η 
 values where the Δf and ΔD contours overlap. The overlap and the
-first-order solution (intersection of contour lines) is shown in the pop-up plot.
+first-order solution (intersection of contour lines) is shown in the *Solution* plot.
 
 Finally, calculated values are displayed:
 *   df_exp: experimentally-measured Δf value in Hz/cm^2
@@ -551,16 +538,70 @@ Created on Dec 3 2019 by ericmuckley@gmail.com</string>
     </property>
    </widget>
    <widget class="QPushButton" name="export_results">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>390</y>
+      <x>530</x>
+      <y>420</y>
       <width>131</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>Export results</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="plot_sol_surf">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>380</y>
+      <width>91</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Plot solution</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="plot_df_surf">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>380</y>
+      <width>91</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Plot Δf surface</string>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="plot_dd_surf">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>380</y>
+      <width>91</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Plot ΔD surface</string>
     </property>
    </widget>
   </widget>

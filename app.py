@@ -39,7 +39,6 @@ from PyQt5.QtWidgets import QMainWindow, QFileDialog
 
 import os
 import sys
-import time
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -53,6 +52,7 @@ plt.rcParams['xtick.minor.width'] = 3
 plt.rcParams['xtick.major.width'] = 3
 plt.rcParams['ytick.minor.width'] = 3
 plt.rcParams['ytick.major.width'] = 3
+plt.rcParams['figure.autolayout'] = True
 
 
 class Worker(QtCore.QRunnable):
@@ -113,61 +113,34 @@ class App(QMainWindow):
         # assign actions to GUI buttons
         # example: self.ui.BUTTON_NAME.clicked.connect(self.FUNCTION_NAME)
         self.ui.fit_model.clicked.connect(self.fit_model_in_new_thread)
-        #self.ui.setdirectory.clicked.connect(self.setdirectory)
-        #self.ui.addsample.clicked.connect(self.add_sample)
-        #self.ui.createplot.clicked.connect(self.create_plot)
-        #self.ui.save_file.clicked.connect(self.save_file)
         
-        
-        #self.ui.test_pause_button.clicked.connect(self.pause)
-        
-        
-        #self.ui.importdata.clicked.connect(self.import_dict)
-        
+        self.ui.plot_df_surf.clicked.connect(self.plot_df_surf)
+        self.ui.plot_dd_surf.clicked.connect(self.plot_dd_surf)
+        self.ui.plot_sol_surf.clicked.connect(self.plot_sol_surf)
+        self.ui.export_results.clicked.connect(self.export_results)
         
         # assign actions to checkboxes
         # example: self.ui.CHECKBOX.stateChanged.connect(self.FUNCTION_NAME)
 
-        #self.ui.savesampleinfo.setEnabled(False)
-
-        # initialize some settings
-        # self.eis_busy = False
-
-        # initialize file-saving variables
-        # self.df_i = 0
-        # self.save_file_dir = None
-        # self.start_time = time.time()
-        # self.start_date = time.strftime('%Y-%m-%d_%H-%M_')
-        # this opens file diaglog for saving
-        # self.set_file_save_directory()
-        
         
         # set default data folder and create it if it doesn't exist
-        self.filedir = os.getcwd()+'\\data'
+        self.filedir = os.getcwd()+'\\QCMD_model_results'
         if not os.path.exists(self.filedir):
             os.makedirs(self.filedir)
-       
-        
-
-        
-        # initialize plots so we can check later if they exist
-        self.p1 = None
-
-        self.random_list = []
 
 
 # %% ----------- system control functions ------------------------------
 
     # file I/O utilities ---------------------------------------------------
 
-    def save_file(self):
-        """Save some data to file."""
-        filename = 'test_file_name'
+    def export_results(self):
+        """Save modeling results to file."""
+        filename = 'QCMD_results'
         filepath = self.filedir + '\\' + filename + '.csv'
-        df = pd.DataFrame(columns=['a', 'b', 'c'],
-                          data=np.random.random((100, 3)))
+        df = pd.DataFrame(list(self.results.items()))
         df.to_csv(filepath)
         self.ui.outbox.append('\nFile saved to ' + filepath)
+
 
     def set_directory(self):
         """Set the directory for saving files."""
@@ -181,35 +154,10 @@ class App(QMainWindow):
         self.ui.outbox.append('\nFile directory is set to ' + self.filedir)
 
 
-
-
-
-    def execute_during_pause(self):
-        print("Thread start") 
-        
-        for i in range(6):
-            a = np.random.random()
-            print(a)
-            print(i)
-            print(time.ctime())
-            self.ui.outbox.append(str(i))
-            time.sleep(1)
-            self.random_list.append(a)
-        print("Thread complete")
-        self.ui.outbox.append(str(self.random_list))
-
-    def pause(self):
-        """Pause the gui to check responsivity."""
-        worker = Worker(self.execute_during_pause)  # pass other args here
-        self.threadpool.start(worker)
-
-
     def fit_model_in_new_thread(self):
         """Run Kelvin-Voigt model in new thread."""
         worker = Worker(self.fit_model)  # pass other args here
         self.threadpool.start(worker)
-
-
 
 
     def get_ui_inputs(self):
@@ -231,8 +179,8 @@ class App(QMainWindow):
 
     def mu_eta_mesh(self, uidict):
         """Create mesh of mu and eta valuses using inputs on UI."""
-        # get 2D mesh grid points of log mu and eta values
-        step_num=40
+        # get 2D 1mesh grid points of log mu and eta values
+        step_num=50
         mu_mesh, eta_mesh = np.meshgrid(
                 np.linspace(uidict['mu_low'], uidict['mu_high'],
                             step_num).astype(float),
@@ -247,39 +195,28 @@ class App(QMainWindow):
                              n=uidict['n'],
                              f0=uidict['f0'],
                              medium=uidict['medium'])
-
         return mu_mesh, eta_mesh, df_surf, dd_surf          
 
 
     def fit_model(self):
         """Run modeling of the QCM-D dtaa using inputs from UI. """
         self.ui.fit_model.setDisabled(True)
-        self.ui.outbox.append('------------------------')
+        self.ui.outbox.append('------------------------------------------')
         self.ui.outbox.append('Fitting model...')
         # get dictionary of input values from UI
         uidict = self.get_ui_inputs()
-        results = uidict.copy()
+        self.results = uidict.copy()
+        self.contours = {}
         
         # get grid of possible mu, eta, df, and dd values
         mu_mesh, eta_mesh, df_surf, dd_surf = self.mu_eta_mesh(uidict)
-
         # plot delta F heatmap
-        df_cont_plot = plt.contour(mu_mesh, eta_mesh,
-                                   df_surf, uidict['df_exp'])
-        if self.ui.show_contour_plots.isChecked():
-            plt.contourf(mu_mesh, eta_mesh, df_surf, 50, cmap='rainbow')
-            self.plot_setup(title='Delta F (Hz/cm^2)',
-                       labels=['Log (mu)', 'Log (eta)'], colorbar=True)
-            plt.show()
-        
+        plt.ioff()
+        df_cont_plot = plt.contour(
+                mu_mesh, eta_mesh, df_surf, uidict['df_exp'])
         # plot delta D heatmap
-        dd_cont_plot = plt.contour(mu_mesh, eta_mesh,
-                                   dd_surf, uidict['dd_exp'])
-        if self.ui.show_contour_plots.isChecked():
-            plt.contourf(mu_mesh, eta_mesh, dd_surf, 50, cmap='rainbow')
-            self.plot_setup(title='Delta D (x10^-6)',
-                       labels=['Log (mu)', 'Log (eta)'], colorbar=True)
-            plt.show()
+        dd_cont_plot = plt.contour(
+                mu_mesh, eta_mesh, dd_surf, uidict['dd_exp'])
         
         # extract contours which correspond to experimental values
         df_cont = self.get_contour(df_cont_plot)
@@ -287,22 +224,11 @@ class App(QMainWindow):
         # find intersection of solutions
         intersection_list = np.array(
                 self.find_intersections(df_cont, dd_cont))
-        
-        # check if there are any solutions
+        plt.cla()
+        # if there are any solutions, select the 0th-order solution
         if len(intersection_list) > 0:
-        
-            # select the 0th-order solution
             sol = sorted(intersection_list, key = lambda i: float(i[1]))[-1]
-            plt.scatter(sol[0], sol[1], marker='x', s=300, c='k', label='solution')
-            #plt.scatter(intersection_list[:,0], intersection_list[:,1])
-        
-            # plot contour intersection
-            plt.scatter(df_cont[:, 0], df_cont[:, 1], s=1, c='b', label='df')
-            plt.scatter(dd_cont[:, 0], dd_cont[:, 1], s=1, c='r', label='dd')
-            self.plot_setup(title='Contour intersection',
-                            labels=['Log (mu)', 'Log (eta)'], legend=True)
-            plt.show()
-        
+            
             # get calculated mu and eta values, along with G' and G'' 
             mu, eta, = 10**sol[0], 10**sol[1]
             Gp, Gdp = mu, 2*np.pi*uidict['f0']*eta
@@ -313,20 +239,31 @@ class App(QMainWindow):
                                                n=uidict['n'],
                                                f0=uidict['f0'],
                                                medium=uidict['medium'])
-
+            # get penetration depth
             pen_dep = self.get_penetration_depth(uidict['f0'], eta,
                                                  uidict['rho'])
             
-            results.update({'df_fit': df_fit, 'dd_fit': dd_fit,
-                            'mu': mu, 'eta': eta,
-                            'penetration_depth': pen_dep,
-                            "G'": Gp, "G''": Gdp})
+            self.results.update({'df_fit': df_fit, 'dd_fit': dd_fit,
+                                 'mu': mu, 'eta': eta,
+                                 'penetration_depth': pen_dep,
+                                 "G'": Gp, "G''": Gdp})
+            self.contours.update({'df_exp': uidict['df_exp'],
+                                  'dd_exp': uidict['dd_exp'],
+                                  'mu_mesh': mu_mesh, 'eta_mesh': eta_mesh,
+                                  'df_surf': df_surf, 'dd_surf': dd_surf,
+                                  'df_cont': df_cont, 'dd_cont': dd_cont,
+                                  'sol': sol})
 
             self.ui.outbox.append(
                     'Found '+str(len(intersection_list))+' solutions.')
             self.ui.outbox.append('First-order solution:')
-            for key in results:
-                self.ui.outbox.append(str(key)+': '+str(results[key]))
+            self.ui.plot_sol_surf.setDisabled(False)
+            self.ui.plot_df_surf.setDisabled(False)
+            self.ui.plot_dd_surf.setDisabled(False)
+            self.ui.export_results.setDisabled(False)
+            for key in self.results:
+                self.ui.outbox.append(str(key)+': '+str(self.results[key]))
+
         else:
             self.ui.outbox.append(
                     '\n\nNo solutions exist with these parameters.')
@@ -334,7 +271,56 @@ class App(QMainWindow):
         self.ui.outbox.moveCursor(QtGui.QTextCursor.End)
 
 
+    def plot_df_surf(self):
+        """Plot delta F surface."""
+        plt.cla()
+        fig_df = plt.figure(5)
+        plt.ion()
+        plt.contour(self.contours['mu_mesh'], self.contours['eta_mesh'],
+                    self.contours['df_surf'], self.contours['df_exp'])
+        plt.contourf(self.contours['mu_mesh'], self.contours['eta_mesh'],
+                     self.contours['df_surf'], 50, cmap='rainbow')
+        self.plot_setup(title='Δf (Hz/cm^2)',
+                   labels=['Log (μ) (Pa)', 'Log (η) (Pa s)'], colorbar=True)
+        plt.tight_layout()
+        fig_df.canvas.set_window_title('Δf surface')
+        fig_df.show()
 
+
+    def plot_dd_surf(self):
+        """Plot delta D surface."""
+        plt.cla()
+        fig_dd = plt.figure(2)
+        plt.ion()
+        plt.contour(self.contours['mu_mesh'], self.contours['eta_mesh'],
+                    self.contours['dd_surf'], self.contours['dd_exp'])
+        plt.contourf(self.contours['mu_mesh'], self.contours['eta_mesh'],
+                     self.contours['dd_surf'], 50, cmap='rainbow')
+        self.plot_setup(title='ΔD (x 10^-6)',
+                   labels=['Log (μ) (Pa)', 'Log (η) (Pa s)'], colorbar=True)
+        plt.tight_layout()
+        fig_dd.canvas.set_window_title('ΔD surface')
+        fig_dd.show()
+
+
+    def plot_sol_surf(self):
+        """Plot solution surface."""
+        plt.cla()
+        fig_df = plt.figure(3)
+        plt.ion()
+        plt.scatter(self.contours['sol'][0],
+                    self.contours['sol'][1], marker='x',
+                    s=300, c='k', label='solution')
+        # plot contour intersection
+        plt.scatter(self.contours['df_cont'][:, 0],
+                    self.contours['df_cont'][:, 1], s=1, c='b', label='df')
+        plt.scatter(self.contours['dd_cont'][:, 0],
+                    self.contours['dd_cont'][:, 1], s=1, c='r', label='dd')
+        self.plot_setup(title='Solution',
+                   labels=['Log (μ) (Pa)', 'Log (η) (Pa s)'], legend=True)
+        plt.tight_layout()
+        fig_df.canvas.set_window_title('Solution')
+        fig_df.show()
 
 
     def plot_setup(self, labels=['X', 'Y'], fsize=20, setlimits=False,
@@ -461,17 +447,6 @@ class App(QMainWindow):
         return np.sqrt(eta / (np.pi * freq * rho))
 
 
-
-
-
-    # ---------------------------------------------------------------------
-    
-  
-
-    def main_loop(self):
-        """Execute a main loop repeatedly while the app is running."""
-        pass
-
     def quitapp(self):
         """Quit the application."""
         self.deleteLater()
@@ -480,8 +455,6 @@ class App(QMainWindow):
         self.close()  
         # kill python kernel
         sys.exit()  
-
-
 
 
 

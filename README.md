@@ -11,6 +11,8 @@ viscoelastic model. Once the solution is found, you may adjust
 the range of μ and η values to limit the search space and obtain
 a solution with higher precision.  
 
+![](UI.JPG)
+
 For more information about the viscoelastic model, see:
 1.   Voinova, M.V., Rodahl, M., Jonson, M. and Kasemo, B., 1999. Viscoelastic
 acoustic response of layered polymer films at fluid-solid interfaces:

@@ -618,6 +618,8 @@ Created on Dec 3 2019 by ericmuckley@gmail.com</string>
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionChangefiledir"/>
+    <addaction name="actionShowfiledir"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -628,14 +630,14 @@ Created on Dec 3 2019 by ericmuckley@gmail.com</string>
     <string>Quit</string>
    </property>
   </action>
-  <action name="actionShowfiledir">
-   <property name="text">
-    <string>Show file save directory</string>
-   </property>
-  </action>
   <action name="actionChangefiledir">
    <property name="text">
-    <string>Change file save directory</string>
+    <string>Change file directory</string>
+   </property>
+  </action>
+  <action name="actionShowfiledir">
+   <property name="text">
+    <string>Show file directory</string>
    </property>
   </action>
  </widget>

@@ -94,20 +94,10 @@ class App(QMainWindow):
         # initialize multithreading
         self.threadpool = QtCore.QThreadPool()
 
-
-
-
-        # self.move(150, 150)  # set initial position of the window
-
-        # create timer which updates fields on GUI (set interval in ms)
-        # self.timer = QtCore.QTimer(self)
-        # self.timer.timeout.connect(self.main_loop)
-        # self.timer.start(int(self.ui.set_main_loop_delay.value()))
-
         # assign functions to top menu items
         # example: self.ui.menu_item_name.triggered.connect(self.function_name)
-        #self.ui.actionShowfiledir.triggered.connect(self.show_directory)
-        #self.ui.actionChangefiledir.triggered.connect(self.set_directory)
+        self.ui.actionShowfiledir.triggered.connect(self.show_directory)
+        self.ui.actionChangefiledir.triggered.connect(self.set_directory)
         self.ui.actionQuit.triggered.connect(self.quitapp)
 
         # assign actions to GUI buttons
@@ -121,7 +111,6 @@ class App(QMainWindow):
         
         # assign actions to checkboxes
         # example: self.ui.CHECKBOX.stateChanged.connect(self.FUNCTION_NAME)
-
         
         # set default data folder and create it if it doesn't exist
         self.filedir = os.getcwd()+'\\QCMD_model_results'
@@ -267,6 +256,10 @@ class App(QMainWindow):
         else:
             self.ui.outbox.append(
                     '\n\nNo solutions exist with these parameters.')
+            self.ui.plot_sol_surf.setDisabled(True)
+            self.ui.plot_df_surf.setDisabled(True)
+            self.ui.plot_dd_surf.setDisabled(True)
+            self.ui.export_results.setDisabled(True)
         self.ui.fit_model.setDisabled(False)
         self.ui.outbox.moveCursor(QtGui.QTextCursor.End)
 

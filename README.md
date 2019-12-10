@@ -13,6 +13,16 @@ a solution with higher precision.
 
 ![](UI.JPG)
 
+![](df_surface.JPG)
+
+![](dD_surface.JPG)
+
+![](Solution.JPG)
+
+
+
+
+
 For more information about the viscoelastic model, see:
 1.   Voinova, M.V., Rodahl, M., Jonson, M. and Kasemo, B., 1999. Viscoelastic
 acoustic response of layered polymer films at fluid-solid interfaces:

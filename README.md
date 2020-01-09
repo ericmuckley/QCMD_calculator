@@ -1,6 +1,6 @@
-# QCMD_calculator
+# QCMD calculator
 
-This is GUI-based software which enables calculation of
+This is a GUI which enables calculation of
 viscoelastic properties from quartz crystal microbalance (QCM-D) data by
 fitting ΔF and ΔD QCM response to the
 Kelvin-Voigt viscoelastic model to obtain viscosity and shear modulus of

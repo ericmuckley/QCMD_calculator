@@ -36,4 +36,3 @@ pp.213-220.
 https://journals.sagepub.com/doi/full/10.1016/j.jala.2009.01.003
 
 Created on Dec 9 2019
-@author: ericmuckley@gmail.com

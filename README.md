@@ -5,16 +5,12 @@ viscoelastic properties from quartz crystal microbalance (QCM-D) data by
 fitting ΔF and ΔD QCM response to the Kelvin-Voigt viscoelastic model to obtain viscosity and shear modulus of
 an adlayer film, enabling estimation of G' and G'' (elastic and loss moduli).
 
-Use the *User Inputs* section to input experimental data. Run the
-viscoelastic model. Solutions for the ΔF response are shown as contours on the ΔF plot.
-Solutions for ΔD are shown as contours on the ΔD plot, and solutions of the complete model
-are found where the two ΔF and ΔD solutions intersect (last plot). Once the solution is found, you may adjust
-the range of μ and η values to limit the search space and obtain a solution with higher precision. Hover the mouse over the *Hover for help* button to see more help.
+Use the *User Inputs* section to input experimental data. Run the viscoelastic model. Solutions for the ΔF response are shown as contours on the ΔF plot. Solutions for ΔD are shown as contours on the ΔD plot, and solutions of the complete model are found where the two ΔF and ΔD solutions intersect (last plot). Once the solution is found, you may adjust the range of μ and η values to limit the search space and obtain a solution with higher precision. Hover the mouse over the *Hover for help* button to see more help.
 
 
 ## Running the app
 
-To use the application, download this repositoary as a zip file, and extract on the local PC. Then open Python and run **app.py** in the *QCMD_calculator* folder. Dependencies such as PyQt may need to be installed using *Anaconda* or *pip*. All dependencies are listed at the beginning of *app.py* in the imports section. To edit the user interface, use *QtDesigner* (it comes prepackaged with *Anaconda*) and open the UI.ui file to edit.
+To use the application, download this repositoary as a zip file, and extract it on the local PC. Then open Python and run **app.py** in the *QCMD_calculator* folder. Dependencies such as PyQt may need to be installed using *Anaconda* or *pip*. All dependencies are listed at the beginning of *app.py* in the imports section. To edit the user interface, use *QtDesigner* (it comes prepackaged with *Anaconda*) and open the UI.ui file to edit.
 
 ## Screenshots
 

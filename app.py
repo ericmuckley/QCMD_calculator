@@ -4,7 +4,7 @@
 
 This script controls the GUI functions for calculating
 viscoelastic properties from QCM-D data by
-fitting $\Delta$F and $\Delta$D QCM data to the
+fitting ΔF and ΔD QCM data to the
 Kelvin-Voigt model to obtain viscosity and shear modulus of
 an adlayer film for calculation of  G' and G'' (elastic and loss moduli).
 

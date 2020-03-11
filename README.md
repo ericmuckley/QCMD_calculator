@@ -10,7 +10,16 @@ Use the *User Inputs* section to input experimental data. Run the viscoelastic m
 
 ## Running the app
 
-To use the application, download this repositoary as a zip file, and extract it on the local PC. Then open Python and run **app.py** in the *QCMD_calculator* folder. Dependencies such as PyQt may need to be installed using *Anaconda* or *pip*. All dependencies are listed at the beginning of *app.py* in the imports section. To edit the user interface, use *QtDesigner* (it comes prepackaged with *Anaconda*) and open the UI.ui file to edit.
+To use the application, download this repositoary as a zip file, and extract it on the local PC. Then open Python and run **app.py** in the *QCMD_calculator* folder. Dependencies such as PyQt may need to be installed using *Anaconda* or *pip*. All dependencies are listed below. To edit the user interface, use *QtDesigner* (it comes prepackaged with *Anaconda*) and open the ui.ui file to edit.
+
+### Dependencies
+
+* PyQt5
+* numpy
+* pandas
+* matplotlib
+* shapley
+
 
 ## Screenshots
 

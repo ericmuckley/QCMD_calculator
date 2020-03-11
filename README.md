@@ -1,4 +1,4 @@
-# QCMD calculator
+# QCM-D calculator
 
 This is an application which enables calculation of
 viscoelastic properties from quartz crystal microbalance (QCM-D) data by

@@ -11,18 +11,24 @@ Solutions for ΔD are shown as contours on the ΔD plot, and solutions of the co
 are found where the two ΔF and ΔD solutions intersect (last plot). Once the solution is found, you may adjust
 the range of μ and η values to limit the search space and obtain a solution with higher precision. Hover the mouse over the *Hover for help* button to see more help.
 
-![](UI.JPG)
-
-![](df_surface.JPG)
-
-![](dD_surface.JPG)
-
-![](Solution.JPG)
-
 
 ## Running the app
 
 To use the application, download this repositoary as a zip file, and extract on the local PC. Then open Python and run **app.py** in the *QCMD_calculator* folder. Dependencies such as PyQt may need to be installed using *Anaconda* or *pip*. All dependencies are listed at the beginning of *app.py* in the imports section. To edit the user interface, use *QtDesigner* (it comes prepackaged with *Anaconda*) and open the UI.ui file to edit.
+
+## Screenshots of the app
+
+#### User interface
+![](UI.JPG)
+
+#### ΔF surface with possible solutions indicated by black contour line
+![](df_surface.JPG)
+
+#### ΔD surface with possible solutions indicated by black contour line
+![](dD_surface.JPG)
+
+#### Intersection of ΔF and ΔD solution contours, revealing 1st order solution
+![](Solution.JPG)
 
 
 ## Additional references

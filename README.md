@@ -10,7 +10,7 @@ viscoelastic model. Solutions for the ΔF response are shown as contours on the 
 Solutions for ΔD are shown as contours on the ΔD plot, and solutions of the complete model
 are found where the two ΔF and ΔD solutions intersect (last plot). Once the solution is found, you may adjust
 the range of μ and η values to limit the search space and obtain
-a solution with higher precision.  
+a solution with higher precision. Hover the mouse over the *Hover for help* button sto see more help.
 
 ![](UI.JPG)
 
@@ -21,6 +21,9 @@ a solution with higher precision.
 ![](Solution.JPG)
 
 
+## Running the app
+
+To use the application, download this repositoary as a zip file, and extract on the local PC. Then open Python and run **app.py** in the *QCMD_calculator* folder. Dependencies such as PyQt may need to be installed using *Anaconda* or *pip*. All dependencies are listed at the beginning of *app.py* in the imports section. To edit the user interface, use *QtDesigner* (it comes prepackaged with *Anaconda*) and open the UI.ui file to edit.
 
 
 

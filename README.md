@@ -20,16 +20,16 @@ To use the application, download this repositoary as a zip file, and extract on 
 
 ### User interface
 ![](UI.JPG)
-
+___
 ### ΔF surface with possible solutions indicated by black contour line
 ![](df_surface.JPG)
-
+___
 ### ΔD surface with possible solutions indicated by black contour line
 ![](dD_surface.JPG)
-
+___
 ### Intersection of ΔF and ΔD solution contours, revealing 1st order solution
 ![](Solution.JPG)
-
+___
 
 ## Additional references
 
